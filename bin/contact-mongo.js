@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import * as chalk from 'chalk';
-import * as boxen from 'boxen';
-import * as  readline  from 'readline';
+import chalk from 'chalk';
+import boxen from 'boxen';
+import readline  from 'readline';
 import {promisify} from 'util';
 import Table from 'cli-table';
 import mongoDriver from './mongo.js';
@@ -125,20 +125,10 @@ const getContact = async () => {
 const addContact = async () => {
   var contact = await getContact();
 
-  MongoClient.connect("mongodb://localhost:27017/mydb", function (err, db) {
-      
-    if (err) throw err;
-    var dbo = db.db("mydb");
-
-    dbo.collection("contact").insertOne(contact, function(err, res) {
-      if (err) throw err;
-
-      showMessage("Saved new contact");
-      
-      db.close();
-    });
-  
-  });
+  let query = await mongoDriver.database.collection("contact").insertOne(contact);
+  if (query.result.ok) {
+    showMessage("Saved new contact");
+  }
 
   mainMenu();
 };
@@ -147,16 +137,22 @@ const mainMenu = async () => {
 
   let message1 = `s - show contacts`;
   let message2 = `a - add new contact`;
+  let message3 = `q - quit`;
 
   console.log(message1);
   console.log(message2);
+  console.log(message3);
 
   rl.question('choose one of item: ', (choose) => {
     if (choose == 'a') {
       addContact();
     }
-    else {
+    else if (choose == 's') {
       showContacts();
+    }
+    else {
+      mongoDriver.client.close();
+      process.exit();
     }
   });
 

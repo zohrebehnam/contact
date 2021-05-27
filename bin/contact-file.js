@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const chalk = require("chalk");
-const boxen = require("boxen");
-const readline = require('readline');
-const { promisify } = require('util');
-var Table = require('cli-table');
+import fs from 'fs';
+import chalk from 'chalk';
+import boxen from 'boxen';
+import readline  from 'readline';
+import {promisify} from 'util';
+import Table from 'cli-table';
 
 
 readline.Interface.prototype.question[promisify.custom] = function(prompt) {
@@ -44,6 +44,12 @@ const saveFile = (jsonContacts) => {
 
 const showContacts = () => {
   fs.readFile('contact.json', 'utf8', (error, data) => {
+
+    if (error) {
+      mainMenu();
+      return;
+    }
+
     let contacts = JSON.parse(data.toString()); //now it an object
 
     var table = new Table({
@@ -69,10 +75,10 @@ const showContacts = () => {
     console.log('b - back to main menu');
     
     rl.question('Choose one of item: ', (choose) => {
-      if(choose == 'b') {
+      if (choose == 'b') {
         mainMenu();
       }
-      else if(choose == 'd') {
+      else if (choose == 'd') {
         deleteContact(contacts);
       }
       else {
@@ -131,8 +137,12 @@ const addContact = async () => {
   var contact = await getContact();
 
   fs.readFile('contact.json', 'utf8', (error, data) => {
-    let contacts = JSON.parse(data); //now it an array
-  
+
+    let contacts = [];
+    if (data !== undefined) {
+      contacts = JSON.parse(data); //now it an array
+    }
+
     //Add some data to it like
     contacts.push(contact);
     
@@ -149,16 +159,21 @@ const addContact = async () => {
 const mainMenu = () => {
   let message1 = `s - show contacts`;
   let message2 = `a - add new contact`;
+  let message3 = `q - quit`;
 
   console.log(message1);
   console.log(message2);
+  console.log(message3);
 
   rl.question('choose one of item: ', (choose) => {
-    if(choose == 'a') {
+    if (choose == 'a') {
       addContact();
     }
-    else {
+    else if (choose == 's') {
       showContacts();
+    }
+    else {
+      process.exit();
     }
   });
 
