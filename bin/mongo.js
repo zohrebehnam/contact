@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { MongoClient } from "mongodb";
+import mongodb from "mongodb";
 
 class MongoDB {
 
@@ -8,7 +8,9 @@ class MongoDB {
     
     const url = "mongodb://localhost:27017/mydb";
     
-    this.client = new MongoClient(url, {});
+    this.client = new mongodb.MongoClient(url, {});
+
+    this.init();
   }
 
   async init() {
@@ -32,6 +34,6 @@ class MongoDB {
 
 };
 
-const mongo = new MongoDB();
+const mongoDriver = new MongoDB();
 
-module.exports = 'mongo';
+export default mongoDriver;

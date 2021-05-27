@@ -3,9 +3,9 @@
 import * as chalk from 'chalk';
 import * as boxen from 'boxen';
 import * as  readline  from 'readline';
-import promisify from 'util';
+import {promisify} from 'util';
 import Table from 'cli-table';
-import test from './mongo.js';
+import mongoDriver from './mongo.js';
 
 
 readline.Interface.prototype.question[promisify.custom] = function(prompt) {
@@ -40,7 +40,7 @@ const showMessage = (message) => {
 const showContacts = () => {
   var contacts = [];
 
-  mongo.collection("contact").find({}).toArray((err, result) => {
+  mongoDriver.database.collection("contact").find({}).toArray((err, result) => {
     if (err) throw err;
     contacts = result;
     db.close();
