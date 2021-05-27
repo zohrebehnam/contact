@@ -8,7 +8,7 @@ class MongoDB {
     
     const url = "mongodb://localhost:27017/mydb";
     
-    this.client = new mongodb.MongoClient(url, {});
+    this.client = new mongodb.MongoClient(url, { useUnifiedTopology: true });
 
     this.init();
   }
@@ -21,7 +21,7 @@ class MongoDB {
       await this.client.connect();
 
       // Select database
-      this.database = client.db("mydb");
+      this.database = this.client.db("mydb");
 
       // Establish and verify connection
       await this.database.command({ ping: 1 });

@@ -37,14 +37,10 @@ const showMessage = (message) => {
   console.log(msgBox);
 };
 
-const showContacts = () => {
+const showContacts = async () => {
   var contacts = [];
 
-  mongoDriver.database.collection("contact").find({}).toArray((err, result) => {
-    if (err) throw err;
-    contacts = result;
-    db.close();
-  });
+  contacts = await mongoDriver.database.collection("contact").find({}).toArray();
 
   var table = new Table({
     head: ['#', 'Name', 'Mobile', 'Mail'],
@@ -157,10 +153,10 @@ const mainMenu = async () => {
 
   rl.question('choose one of item: ', (choose) => {
     if (choose == 'a') {
-      addContact(client);
+      addContact();
     }
     else {
-      showContacts(client);
+      showContacts();
     }
   });
 
