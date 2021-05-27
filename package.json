@@ -1,11 +1,11 @@
 {
-  "name": "hello-cli",
+  "name": "contact",
   "version": "1.0.0",
   "description": "",
   "main": "bin/index.js",
   "type": "module",
   "bin": {
-    "hello": "./bin/index.js"
+    "contact": "./bin/index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
