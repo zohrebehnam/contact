@@ -81,30 +81,29 @@ const deleteContact = (contacts) => {
   
   rl.question('enter number of item: ', (choose) => {
     if (choose > 0 && typeof contacts[choose-1] != 'undefined') {
-      // remove an object by element index
-      contacts.splice(choose-1 , 1);
-
-      // Convert it from an object to string with stringify
-      var jsonContacts = JSON.stringify(contacts);
-          
-      // use fs to write the file to disk
-      saveFile(jsonContacts);
+      let query = mongoDriver.database.collection("contact").remove(contacts[choose-1]);
+      if (query.result.ok) {
+        showMessage("deleted contact");
+      }
     }
+
     showContacts();
   });
 };
 
 
 const editContact = (contacts) => {
-  rl.question('enter number of item: ', async (choose) => {
-    console.log(contacts[choose-1]);
-    contacts[choose-1] = await getContact();
 
-    // Convert it from an object|array to string with stringify
-    var jsonContacts = JSON.stringify(contacts);
-          
-    // use fs to write the file to disk
-    saveFile(jsonContacts);
+  rl.question('enter number of item: ', async (choose) => {
+    if (choose > 0 && typeof contacts[choose-1] != 'undefined') {
+      console.log(contacts[choose-1]);
+      let where = {_id: contacts[choose-1]._id};
+      let contact = await getContact();
+      let query = mongoDriver.database.collection("contact").updateOne(where, { $set: contact});
+      if (query.result.ok) {
+        showMessage("updated   contact");
+      }
+    }
 
     showContacts();
   });
