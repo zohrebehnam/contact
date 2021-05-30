@@ -101,7 +101,7 @@ const editContact = (contacts) => {
       let contact = await getContact();
       let query = mongoDriver.database.collection("contact").updateOne(where, { $set: contact});
       if (query.result.ok) {
-        showMessage("updated   contact");
+        showMessage("updated contact");
       }
     }
 

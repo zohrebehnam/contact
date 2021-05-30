@@ -1,12 +1,18 @@
 #!/usr/bin/env node
 
 import mongodb from "mongodb";
+import dotenv from "dotenv";
+
 
 class MongoDB {
 
   constructor() {
-    
-    const url = "mongodb://localhost:27017/mydb";
+
+    this.config = dotenv.config();
+    let url = `mongodb://${this.config.parsed.MONGO_HOST}:${this.config.parsed.MONGO_PORT}`;
+    if (this.config.parsed.MONGO_USERNAME.length && this.config.parsed.MONGO_PASSWORD.length) {
+      url = `mongodb://${this.config.parsed.MONGO_USERNAME}:${this.config.parsed.MONGO_PASSWORD}@${this.config.parsed.MONGO_HOST}:${this.config.parsed.MONGO_PORT}`;
+    }
     
     this.client = new mongodb.MongoClient(url, { useUnifiedTopology: true });
 
@@ -21,7 +27,7 @@ class MongoDB {
       await this.client.connect();
 
       // Select database
-      this.database = this.client.db("mydb");
+      this.database = this.client.db(this.config.parsed.MONGO_DB_NAME);
 
       // Establish and verify connection
       await this.database.command({ ping: 1 });
