@@ -5,9 +5,12 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import mongoDriver from './mongo.js';
 import mongodb from 'mongodb';
+import dotenv from "dotenv";
+
 
 const app = express();
-const port = 3000;
+const config = dotenv.config();
+const port = config.parsed.API_PORT;
 
 app.use(cors());
 
