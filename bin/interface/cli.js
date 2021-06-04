@@ -5,7 +5,8 @@ import boxen from 'boxen';
 import readline  from 'readline';
 import {promisify} from 'util';
 import Table from 'cli-table';
-import mongoDriver from './mongo.js';
+import fileStorage from '../storage/file.js';
+import dbStorage from '../storage/db.js';
 
 
 readline.Interface.prototype.question[promisify.custom] = function(prompt) {
@@ -21,6 +22,9 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
+
+// const storage = fileStorage;
+const storage = dbStorage;
 
 const showMessage = (message) => {
   const greeting = chalk.white.bold(message);
@@ -38,9 +42,8 @@ const showMessage = (message) => {
 };
 
 const showContacts = async () => {
-  var contacts = [];
 
-  contacts = await mongoDriver.database.collection("contact").find({}).toArray();
+  var contacts = await storage.index();
 
   var table = new Table({
     head: ['#', 'Name', 'Mobile', 'Mail'],
@@ -52,7 +55,7 @@ const showContacts = async () => {
     
     if (typeof contact.name != 'undefined') {
       let row = {};
-      row[counter] = [contact.name, contact.mobile, contact.mail];
+      row[counter] = [contact.name, contact.mobile, contact.email];
       table.push(row);
       counter++;
     }
@@ -77,12 +80,11 @@ const showContacts = async () => {
   });
 };
 
-const deleteContact = (contacts) => {
+const deleteContact = async (contacts) => {
   
-  rl.question('enter number of item: ', (choose) => {
+  rl.question('enter number of item: ', async (choose) => {
     if (choose > 0 && typeof contacts[choose-1] != 'undefined') {
-      let query = mongoDriver.database.collection("contact").remove(contacts[choose-1]);
-      if (query.result.ok) {
+      if (await storage.delete(choose, contacts[choose-1])) {
         showMessage("deleted contact");
       }
     }
@@ -91,16 +93,12 @@ const deleteContact = (contacts) => {
   });
 };
 
-
-const editContact = (contacts) => {
+const editContact = async (contacts) => {
 
   rl.question('enter number of item: ', async (choose) => {
     if (choose > 0 && typeof contacts[choose-1] != 'undefined') {
-      console.log(contacts[choose-1]);
-      let where = {_id: contacts[choose-1]._id};
       let contact = await getContact();
-      let query = mongoDriver.database.collection("contact").updateOne(where, { $set: contact});
-      if (query.result.ok) {
+      if (await storage.update(choose, contact, contacts[choose-1])) {
         showMessage("updated contact");
       }
     }
@@ -109,23 +107,10 @@ const editContact = (contacts) => {
   });
 };
 
-const getContact = async () => {
-  var contact = {};
-
-  contact.name = await rl.questionAsync('Enter name: ');
-
-  contact.mobile = await rl.questionAsync('Enter mobile: ');
-
-  contact.mail = await rl.questionAsync('Enter mail: ');
-
-  return contact;
-};
-
 const addContact = async () => {
   var contact = await getContact();
 
-  let query = await mongoDriver.database.collection("contact").insertOne(contact);
-  if (query.result.ok) {
+  if (await storage.insert(contact)) {
     showMessage("Saved new contact");
   }
 
@@ -150,11 +135,23 @@ const mainMenu = async () => {
       showContacts();
     }
     else {
-      mongoDriver.client.close();
+      storage.exit();
       process.exit();
     }
   });
 
+};
+
+const getContact = async () => {
+  var contact = {};
+
+  contact.name = await rl.questionAsync('Enter name: ');
+
+  contact.mobile = await rl.questionAsync('Enter mobile: ');
+
+  contact.email = await rl.questionAsync('Enter mail: ');
+
+  return contact;
 };
 
 mainMenu();
