@@ -13,12 +13,13 @@ class  CLIInterface {
   constructor(storageType) {
 
     this.storage = fileStorage;
-    if (storageType == 'db')
-    var storage = dbStorage;
+    if (storageType == 'db') {
+      this.storage = dbStorage;
+    }
   }
 
   load() {
-    this.mainMenu();
+    this.contactMenu();
   }
 
   showMessage(message) {
@@ -64,7 +65,7 @@ class  CLIInterface {
 
     rl.question('Choose one of item: ', (choose) => {
       if(choose == 'b') {
-        this.mainMenu();
+        this.contactMenu();
       }
       else if(choose == 'd') {
         this.deleteContact(contacts);
@@ -109,10 +110,10 @@ class  CLIInterface {
       this.showMessage("Saved new contact");
     }
 
-    this.mainMenu();
+    this.contactMenu();
   }
 
-  async mainMenu() {
+  async contactMenu() {
 
     let message1 = `s - show contacts`;
     let message2 = `a - add new contact`;
@@ -134,7 +135,6 @@ class  CLIInterface {
         this.process.exit();
       }
     });
-
   }
 
   async getContact() {
@@ -148,8 +148,7 @@ class  CLIInterface {
 
       return contact;
   }
-
-};
+}
 
 
 export default CLIInterface;

@@ -17,8 +17,9 @@ class  APIInterface {
     this.port = this.config.parsed.API_PORT;
 
     this.storage = fileStorage;
-    if (storageType == 'db')
-    var storage = dbStorage;
+    if (storageType == 'db') {
+      this.storage = dbStorage;
+    }
   }
 
   load() {
@@ -88,9 +89,7 @@ class  APIInterface {
     });
     
     this.app.listen(this.port, () => console.log(`Contact app listening on port ${this.port}!`))
-
   }
-
 }
 
 export default APIInterface;
