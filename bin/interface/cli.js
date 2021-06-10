@@ -132,7 +132,7 @@ class  CLIInterface {
       }
       else {
         this.storage.exit();
-        this.process.exit();
+        process.exit();
       }
     });
   }
