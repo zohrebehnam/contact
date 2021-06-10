@@ -6,6 +6,8 @@ import cors from 'cors';
 import dotenv from "dotenv";
 import fileStorage from '../../storage/file.js';
 import dbStorage from '../../storage/db.js';
+import ContactAPI from './contact.js';
+import UserAPI from './user.js';
 
 
 class  APIInterface {
@@ -30,63 +32,31 @@ class  APIInterface {
     this.app.use(bodyParser.urlencoded({ extended: false }));
     this.app.use(bodyParser.json());
 
+    this.app.use(async (req, res, next) => {
 
-    this.app.get('/contact', async (req, res) => {
+      if (req.path == '/user/login') {
+        return next();
+      }
 
-      let contacts = await this.storage.index();
-      res.status(contacts.length ? 200 : 204).send(contacts);
-    });
-
-    this.app.get('/contact/:id', async (req, res) => {
-
-      try {
-        let contact = await this.storage.retrieve(req.params.id);
-        if (contact !== null) {
-          return res.status(200).send(contact);
+      let token = req.headers.authorization;
+      if (token !== undefined) {
+        token = token.replace('Bearer ', '');
+        this.storage.setCollection('token');
+        let result = await this.storage.index({value: token});
+        if (result.length) {
+          this.user_id = result[0].user_id;
+          return next();
         }
       }
-      catch(error) {
-        console.error(error.message);
-      }
-
-      return res.status(204).send({});
+  
+      res.status(401).send({error: 'Unauthorized.'});
     });
 
-    this.app.delete('/contact/:id', async (req, res) => {
+    const user = new UserAPI(this);
+    user.load();
 
-      let result = await this.storage.delete(req.params.id);
-      if (result) {
-        return res.send({status: true, message:'Deleted'});
-      }
-
-      return res.send({status: false, message: 'Delete failed'});
-    });
-
-    this.app.post('/post', async (req, res) => {
-
-      let contact = {
-        name: req.body.name,
-        mobile: req.body.mobile,
-        email: req.body.email
-      };
-
-      let result = await this.storage.insert(contact);
-      if (result) {
-        return res.send({status: true, message:'Saved new contact'});
-      }
-
-      return res.send({status: false, message: 'Save failed'});
-    });
-
-    this.app.put('/update/:id', async (req, res) => {
-
-      let result = await this.storage.update(req.params.id, req.body);
-      if (result) {
-        return res.send({status: true, message: 'Updated contact'});
-      }
-
-      return res.send({status: false, message: 'Update failed'});
-    });
+    const contact = new ContactAPI(this);
+    contact.load();
     
     this.app.listen(this.port, () => console.log(`Contact app listening on port ${this.port}!`))
   }

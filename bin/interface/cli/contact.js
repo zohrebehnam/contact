@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 
-class  ContactCLIInterface {
+class  ContactCLI {
 
   constructor(cli) {
     this.cli = cli;
@@ -126,4 +126,4 @@ class  ContactCLIInterface {
 }
 
 
-export default ContactCLIInterface;
+export default ContactCLI;

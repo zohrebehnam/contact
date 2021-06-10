@@ -2,7 +2,7 @@
 
 import crypto from 'crypto';
 
-class  UserCLIInterface {
+class  UserCLI {
 
     constructor(cli) {
       this.cli = cli;
@@ -129,4 +129,4 @@ class  UserCLIInterface {
   }
   
   
-  export default UserCLIInterface;
+  export default UserCLI;

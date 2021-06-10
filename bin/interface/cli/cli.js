@@ -6,8 +6,8 @@ import Table from 'cli-table';
 import fileStorage from '../../storage/file.js';
 import dbStorage from '../../storage/db.js';
 import rl from '../../driver/readLine.js';
-import ContactCLIInterface from './contact.js';
-import UserCLIInterface from './user.js';
+import ContactCLI from './contact.js';
+import UserCLI from './user.js';
 
 
 class  CLIInterface {
@@ -62,7 +62,7 @@ class  CLIInterface {
           return;
         }
 
-        const selectedInterface = (choose == 'u') ? new UserCLIInterface(this) : new ContactCLIInterface(this);
+        const selectedInterface = (choose == 'u') ? new UserCLI(this) : new ContactCLI(this);
         selectedInterface.load();
       }
       else {
