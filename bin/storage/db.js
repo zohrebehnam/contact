@@ -6,7 +6,10 @@ import mongoDriver from '../driver/mongo.js';
 class DBStorage {
 
   constructor() {
-    this.collection = 'contact';
+  }
+
+  setCollection(collection) {
+    this.collection = collection;
   }
 
   async index() {

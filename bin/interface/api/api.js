@@ -4,8 +4,8 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from "dotenv";
-import fileStorage from '../storage/file.js';
-import dbStorage from '../storage/db.js';
+import fileStorage from '../../storage/file.js';
+import dbStorage from '../../storage/db.js';
 
 
 class  APIInterface {
