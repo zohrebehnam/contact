@@ -8,11 +8,10 @@ import dbStorage from '../storage/db.js';
 import rl from '../driver/readLine.js';
 
 
-
 class  CLIInterface {
 
   constructor(storageType) {
-    
+
     this.storage = fileStorage;
     if (storageType == 'db')
     var storage = dbStorage;
@@ -48,7 +47,7 @@ class  CLIInterface {
 
     let counter = 1;
     contacts.forEach(contact => {
-      
+
       if (typeof contact.name != 'undefined') {
         let row = {};
         row[counter] = [contact.name, contact.mobile, contact.email];
@@ -62,7 +61,7 @@ class  CLIInterface {
     console.log('d - delete');
     console.log('e - edit');
     console.log('b - back to main menu');
-    
+
     rl.question('Choose one of item: ', (choose) => {
       if(choose == 'b') {
         this.mainMenu();
@@ -77,7 +76,7 @@ class  CLIInterface {
   }
 
   async deleteContact(contacts) {
-    
+
     rl.question('enter number of item: ', async (choose) => {
       if (choose > 0 && typeof contacts[choose-1] != 'undefined') {
         if (await this.storage.delete(choose, contacts[choose-1])) {
@@ -88,7 +87,7 @@ class  CLIInterface {
       this.showContacts();
     });
   }
-
+  
   async editContact(contacts) {
 
     rl.question('enter number of item: ', async (choose) => {
@@ -139,15 +138,15 @@ class  CLIInterface {
   }
 
   async getContact() {
-    var contact = {};
+      var contact = {};
 
-    contact.name = await rl.questionAsync('Enter name: ');
+      contact.name = await rl.questionAsync('Enter name: ');
 
-    contact.mobile = await rl.questionAsync('Enter mobile: ');
+      contact.mobile = await rl.questionAsync('Enter mobile: ');
 
-    contact.email = await rl.questionAsync('Enter mail: ');
+      contact.email = await rl.questionAsync('Enter mail: ');
 
-    return contact;
+      return contact;
   }
 
 };

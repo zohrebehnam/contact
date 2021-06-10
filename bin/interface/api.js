@@ -9,7 +9,7 @@ import dbStorage from '../storage/db.js';
 
 
 class  APIInterface {
-  
+
   constructor(storageType) {
 
     this.app = express();
@@ -19,11 +19,10 @@ class  APIInterface {
     this.storage = fileStorage;
     if (storageType == 'db')
     var storage = dbStorage;
-
   }
 
   load() {
-   
+
     this.app.use(cors());
 
     // Configuring body parser middleware
@@ -32,7 +31,7 @@ class  APIInterface {
 
 
     this.app.get('/contact', async (req, res) => {
-        
+
       let contacts = await this.storage.index();
       res.status(contacts.length ? 200 : 204).send(contacts);
     });
