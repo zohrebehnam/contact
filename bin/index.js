@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import CLIInterface from './interface/cli.js';
-import APIInterface from './interface/api.js';
+import CLIInterface from './interface/cli/cli.js';
+import APIInterface from './interface/api/api.js';
 import rl from './driver/readLine.js';
 
 

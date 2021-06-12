@@ -6,30 +6,34 @@ import mongoDriver from '../driver/mongo.js';
 class DBStorage {
 
   constructor() {
-    this.collection = 'contact';
   }
 
-  async index() {
+  setCollection(collection) {
+    this.collection = collection;
+  }
 
-    var contacts = await mongoDriver.database.collection(this.collection).find({}).toArray();
-    
-    return contacts;
+  async index(params) {
+
+    params = params !== undefined ? params : {};
+    var entitys = await mongoDriver.database.collection(this.collection).find(params).toArray();
+
+    return entitys;
   }
 
   async retrieve(id) {
 
-    let contact = await mongoDriver.database.collection(this.collection).findOne({_id: mongodb.ObjectId(id)});
-    if (contact !== null) {
-      return contact;
+    let entity = await mongoDriver.database.collection(this.collection).findOne({_id: mongodb.ObjectId(id)});
+    if (entity !== null) {
+      return entity;
     }
 
     return null;
   }
 
-  async delete(id, selectedContact) {
+  async delete(id, selectedEntity) {
 
-    if (selectedContact !== undefined) {
-      id = selectedContact._id;
+    if (selectedEntity !== undefined) {
+      id = selectedEntity._id;
     }
     else {
       id = mongodb.ObjectId(id);
@@ -43,16 +47,16 @@ class DBStorage {
     return false;
   }
 
-  async update(id, contact, selectedContact) {
+  async update(id, entity, selectedEntity) {
 
-    if (selectedContact !== undefined) {
-      id = selectedContact._id;
+    if (selectedEntity !== undefined) {
+      id = selectedEntity._id;
     }
     else {
       id = mongodb.ObjectId(id);
     }
   
-    let query = await mongoDriver.database.collection(this.collection).updateOne({_id: id}, { $set: contact });
+    let query = await mongoDriver.database.collection(this.collection).updateOne({_id: id}, { $set: entity });
     if (query.result.ok) {
       return true;
     }
@@ -60,9 +64,9 @@ class DBStorage {
     return false;
   }
 
-  async insert(contact) {
+  async insert(entity) {
 
-    let query = await mongoDriver.database.collection(this.collection).insertOne(contact);
+    let query = await mongoDriver.database.collection(this.collection).insertOne(entity);
     if (query.result.ok) {
       return true;
     }

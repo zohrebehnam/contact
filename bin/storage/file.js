@@ -5,7 +5,10 @@ import fs from 'fs';
 class FileStorage {
 
   constructor() {
-    this.fileName = 'contact.json';
+  }
+
+  setCollection(collection) {
+    this.fileName = collection + '.json';
   }
 
   async readFile() {
